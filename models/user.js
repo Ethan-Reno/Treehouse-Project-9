@@ -29,7 +29,7 @@ module.exports = (sequelize) => {
         }
       }
     },
-    email: {
+    emailAddress: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: {
@@ -44,7 +44,7 @@ module.exports = (sequelize) => {
         }
       }
     },
-    password: {
+    confirmedPassword: {
       type: DataTypes.VIRTUAL,  
       allowNull: false,
       validate: {
@@ -56,13 +56,13 @@ module.exports = (sequelize) => {
         },
       }
     },
-    confirmedPassword: {
+    password: {
       type: DataTypes.STRING,
       allowNull: false,
       set(val) {
-        if ( val === this.password ) {
+        if ( val === this.confirmedPassword ) {
           const hashedPassword = bcrypt.hashSync(val, 10);
-          this.setDataValue('confirmedPassword', hashedPassword);
+          this.setDataValue('password', hashedPassword);
         }
       },
       validate: {

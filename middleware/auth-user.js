@@ -12,13 +12,13 @@ exports.authenticateUser = async (req, res, next) => {
   
   // If the user's credentials are available...
   if (credentials) {
-     // Attempt to retrieve the user from the data store by their username (i.e. the user's "key" from the Authorization header).
-     const user = await User.findOne({ where: {username: credentials.name} });
+    // Attempt to retrieve the user from the data store by their username (i.e. the user's "key" from the Authorization header).
+    const user = await User.findOne({ where: {emailAddress: credentials.name} });
 
     // If a user was successfully retrieved from the data store...
     if (user) {
-     // Use the bcrypt to compare the user's password (from the Authorization header) to the user's password that was retrieved from the data store.
-     const authenticated = bcrypt.compareSync(credentials.pass, user.confirmedPassword);
+      // Use the bcrypt to compare the user's password (from the Authorization header) to the user's password that was retrieved from the data store.
+      const authenticated = bcrypt.compareSync(credentials.pass, user.password);
       
       // If the passwords match...
       if (authenticated) {
@@ -26,10 +26,10 @@ exports.authenticateUser = async (req, res, next) => {
         req.currentUser = user;
     
       } else { // for `if (authenticated)`
-        message = `Authentication failure for username: ${user.username}`;
+        message = `Authentication failure`;
       }
     } else { // for `if (user)`
-      message = `User not found for username: ${credentials.name}`;
+      message = `User not found`;
     }
   } else { // for `if (credentials)`
     message = 'Auth header not found';

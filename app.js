@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
 });
 
 // Add routes.
-app.use('/api', userRoutes);
+app.use('/api', userRoutes, courseRoutes);
 
 // send 404 if no other route matched
 app.use((req, res) => {

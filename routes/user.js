@@ -9,23 +9,21 @@ const { User } = require('../models');
 // Construct a router instance.
 const router = express.Router();
 
-// Route that returns a list of users.
+// An /api/users GET route that will return the currently authenticated user along with a 200 HTTP status code.
 router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
-  // This instructs Express to route GET requests to the path "/api/users" first to our custom middleware function and then to the inline router handler function.
   const user = req.currentUser;
-  // Can use the currentUser property with confidence because our inline route handler function will never be called if the request doesn't successfully authenticate.
-
-  res.status(200).json({
-    name: user.name,
-    username: user.username
+  res.status(200).json({ // filter out sensitive data and timestamps
+    firstName: user.firstName,
+    lastName: user.lastName,
+    emailAddress: user.emailAddress
   });
 }));
 
-// Route that creates a new user.
+// An /api/users POST route that will create a new user, set the Location header to "/", and return a 201 HTTP status code and no content.
 router.post('/users', asyncHandler(async (req, res) => {
   try {
     await User.create(req.body);
-    res.redirect(201, '/') //two arguments: status code and redirect route
+    res.redirect(201, '/') // status code and redirect route
   } catch (error) {
     if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
       const errors = error.errors.map(err => err.message);
