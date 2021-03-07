@@ -41,6 +41,9 @@ module.exports = (sequelize) => {
         },
         notEmpty: {
           msg: 'Please provide an email address'
+        },
+        isEmail: {
+          msg: 'Please provide a valid email address'
         }
       }
     },
@@ -67,8 +70,11 @@ module.exports = (sequelize) => {
       },
       validate: {
         notNull: {
-          msg: 'Both passwords must match'
-        }
+          msg: 'Please repeat the password'
+        },
+        notEmpty: {
+          msg: 'Please provide a password'
+        },
       }
     }
   }, { sequelize });
