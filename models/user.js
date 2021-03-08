@@ -47,37 +47,29 @@ module.exports = (sequelize) => {
         }
       }
     },
-    confirmedPassword: {
-      type: DataTypes.VIRTUAL,  
-      allowNull: false,
-      validate: {
-        notNull: {
-          msg: 'A password is required'
-        },
-        notEmpty: {
-          msg: 'Please provide a password'
-        },
-      }
-    },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
-      set(val) {
-        if ( val === this.confirmedPassword ) {
-          const hashedPassword = bcrypt.hashSync(val, 10);
-          this.setDataValue('password', hashedPassword);
-        }
-      },
       validate: {
-        notNull: {
-          msg: 'Please repeat the password'
-        },
-        notEmpty: {
-          msg: 'Please provide a password'
-        },
+          notNull: {
+              msg: 'A password is required'
+          },
+          notEmpty: {
+              msg: 'Please provide a password'
+          },
+          // Require a length between 6 and 20 characters
+          len: {
+              args: [6, 20],
+              msg: 'The password should be between 6 and 20 characters in length'
+          }
       }
-    }
-  }, { sequelize });
+  }
+}, { sequelize });
+
+    User.addHook(
+      "beforeCreate",
+      user => (user.password = bcrypt.hashSync(user.password, 10))
+  );
 
   User.associate = (models) => {
     User.hasMany(models.Course, {
